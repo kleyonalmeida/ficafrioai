@@ -1,0 +1,225 @@
+---
+const moments = [
+  { label: 'Equipamento', title: 'Split 12.000 BTUs', detail: 'Recepção · Clínica Horizonte' },
+  { label: 'Ordem de serviço', title: 'Higienização', detail: 'Filtros e dreno verificados' },
+  { label: 'Próxima visita', title: 'Preventiva', detail: '18 nov · 09h00' },
+];
+---
+
+<section class="section depth-showcase" aria-labelledby="depth-title">
+  <div class="container">
+    <header class="section-heading">
+      <p class="eyebrow">Histórico do equipamento</p>
+      <h2 id="depth-title">Cada visita deixa um registro.</h2>
+      <p>Veja como a ficha do aparelho reúne o último serviço e a próxima manutenção.</p>
+    </header>
+
+    <div class="depth-stage" data-depth-stage>
+      <div class="depth-grid" data-depth="24" aria-hidden="true"></div>
+      <div class="depth-shapes" data-depth="52" aria-hidden="true">
+        <span class="orbit orbit-wide"></span>
+        <span class="orbit orbit-small"></span>
+        <span class="diamond"></span>
+      </div>
+      <ol class="depth-cards" data-depth="82" aria-label="Exemplo de histórico de um aparelho">
+        {moments.map(({ label, title, detail }, index) => (
+          <li class="depth-slot">
+            <article class="depth-card" data-depth-reveal>
+              <div class="depth-card-top">
+                <span>{label}</span>
+                <span class="depth-number" aria-hidden="true">0{index + 1}</span>
+              </div>
+              <h3>{title}</h3>
+              <p>{detail}</p>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <p class="depth-key" aria-label="Camadas da demonstração">
+      <span><i aria-hidden="true"></i> Grade lenta</span>
+      <span><i aria-hidden="true"></i> Formas em ritmo médio</span>
+      <span><i aria-hidden="true"></i> Cartões mais rápidos</span>
+    </p>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const stage = document.querySelector('[data-depth-stage]');
+  if (stage) {
+    const layers = stage.querySelectorAll<HTMLElement>('[data-depth]');
+    const cards = stage.querySelectorAll<HTMLElement>('[data-depth-reveal]');
+    const media = gsap.matchMedia();
+
+    media.add({
+      motion: '(prefers-reduced-motion: no-preference)',
+      wide: '(min-width: 801px)',
+    }, ({ conditions }) => {
+      if (!conditions?.motion) return;
+
+      const scale = conditions.wide ? 1 : 0.55;
+
+      // O palco mede a rolagem. Cada plano percorre uma distância diferente.
+      gsap.fromTo(layers, {
+        y: (_, layer: HTMLElement) => Number(layer.dataset.depth) * scale,
+      }, {
+        y: (_, layer: HTMLElement) => -Number(layer.dataset.depth) * scale,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: stage,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      // O plano move a lista. O reveal move apenas os cartões internos.
+      const reveal = { y: 24, opacity: 0, duration: 0.55, ease: 'power2.out' };
+      const toggleActions = 'play none none reverse';
+
+      if (conditions.wide) {
+        gsap.from(cards, {
+          ...reveal,
+          stagger: 0.16,
+          scrollTrigger: { trigger: stage, start: 'top 72%', toggleActions },
+        });
+      } else {
+        cards.forEach((card) => {
+          gsap.from(card, {
+            ...reveal,
+            scrollTrigger: { trigger: card.parentElement, start: 'top 88%', toggleActions },
+          });
+        });
+      }
+    });
+  }
+</script>
+
+<style>
+  .depth-showcase {
+    padding-block-start: clamp(2rem, 4vw, 3rem);
+    background: var(--app-bg);
+    color: var(--text);
+  }
+
+  .depth-showcase .eyebrow { color: var(--brand-accent); }
+  .depth-showcase .section-heading > p:last-child { color: var(--hero-text); }
+
+  .depth-stage {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: center;
+    min-block-size: 26rem;
+    overflow: hidden;
+    padding: 6rem clamp(1rem, 5vw, 4.5rem);
+    border: 1px solid #3b6685;
+    border-radius: 14px;
+    background: radial-gradient(ellipse at 72% 40%, #1c5370 0%, #122b45 60%, #0c1c30);
+  }
+
+  .depth-grid, .depth-shapes {
+    position: absolute;
+    inset: -4rem 0;
+    pointer-events: none;
+  }
+
+  .depth-grid {
+    background-image:
+      linear-gradient(#67e8f925 1px, transparent 1px),
+      linear-gradient(90deg, #67e8f925 1px, transparent 1px);
+    background-size: 2rem 2rem;
+  }
+
+  .orbit, .diamond { position: absolute; }
+  .orbit {
+    aspect-ratio: 1;
+    border: 1px solid #78dbf6a1;
+    border-radius: 50%;
+    box-shadow: inset 0 0 2rem #67e8f92e, 0 0 1.5rem #67e8f91f;
+  }
+
+  .orbit-wide {
+    inset: 13% auto auto 25%;
+    width: min(47%, 28rem);
+    background: radial-gradient(ellipse at 65% 65%, transparent 48%, #67e8f940);
+  }
+
+  .orbit-small { inset: auto 8% 15% auto; width: min(24%, 13rem); }
+
+  .diamond {
+    inset: 27% auto auto 9%;
+    width: clamp(3.5rem, 12vw, 8rem);
+    aspect-ratio: 1;
+    border: 1px solid #a1effb8c;
+    border-radius: 22%;
+    transform: rotate(32deg);
+    background: linear-gradient(135deg, #67e8f951, #1159761a);
+  }
+
+  .depth-cards {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    padding: 0;
+    list-style: none;
+  }
+
+  .depth-slot:nth-child(2) { margin-block-start: 1.75rem; }
+  .depth-slot:nth-child(3) { margin-block-start: 3.5rem; }
+
+  .depth-card {
+    min-block-size: 8.75rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 0.85rem 2rem #09172766;
+  }
+
+  .depth-card-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-block-end: 0.625rem;
+    color: var(--primary-hover);
+    font-size: 0.8125rem;
+    font-weight: 750;
+  }
+
+  .depth-number { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .depth-card h3 { margin-block-end: 0.25rem; font-size: clamp(1.125rem, 2vw, 1.45rem); }
+  .depth-card p { color: var(--text-muted); font-size: 0.875rem; }
+
+  .depth-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-block-start: 1rem;
+    color: var(--hero-text);
+    font-size: 0.8125rem;
+  }
+
+  .depth-key span { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .depth-key i { width: 0.625rem; height: 0.625rem; border: 1px solid var(--brand-accent); }
+  .depth-key span:nth-child(2) i { border-radius: 50%; background: #115976; }
+  .depth-key span:nth-child(3) i { border-radius: 2px; background: var(--ice); }
+
+  @media (max-width: 800px) {
+    .depth-stage { padding-block: 4.5rem; }
+    .depth-cards { grid-template-columns: minmax(0, 1fr); width: min(100%, 26rem); margin-inline: auto; }
+    .depth-slot:nth-child(n) { margin-block-start: 0; }
+    .depth-card { min-block-size: 0; }
+    .orbit-wide { width: 65%; }
+  }
+</style>

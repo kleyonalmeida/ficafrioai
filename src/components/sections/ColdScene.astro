@@ -1,0 +1,205 @@
+---
+import { Image } from 'astro:assets';
+import openPoster from '../../assets/images/product/ar-condicionado-cena-aberto.png';
+import closedPoster from '../../assets/images/product/ar-condicionado-cena-fechado.png';
+import { product } from '../../data/product';
+import FrozenTitle from './FrozenTitle.astro';
+---
+
+<div class="cold-scene container" data-cold-scene data-model={product.modelUrl}>
+  <div class="cold-device">
+    <svg class="cold-wind" viewBox="0 0 480 155" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <radialGradient id="cold-air-mist">
+          <stop stop-color="#67e8f9" stop-opacity=".78"/>
+          <stop offset=".52" stop-color="#3ab7f5" stop-opacity=".35"/>
+          <stop offset="1" stop-color="#116786" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="cold-air-light" x1="0" x2="480" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#a1effb" stop-opacity=".78"/>
+          <stop offset=".28" stop-color="#67e8f9" stop-opacity=".85"/>
+          <stop offset=".63" stop-color="#3ab7f5" stop-opacity=".34"/>
+          <stop offset="1" stop-color="#116786" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <g class="cold-air-bloom">
+        <ellipse cx="69" cy="43" rx="91" ry="34" fill="url(#cold-air-mist)"/>
+        <ellipse cx="179" cy="74" rx="143" ry="42" fill="url(#cold-air-mist)"/>
+        <ellipse cx="300" cy="98" rx="155" ry="38" fill="url(#cold-air-mist)" opacity=".55"/>
+      </g>
+      <g class="cold-air-wave" fill="none" stroke="url(#cold-air-light)" stroke-linecap="round">
+        <path d="M2 28C60 15 90 33 141 59S218 75 258 63 332 75 382 89 439 102 478 95"/>
+        <path d="M6 40C62 29 96 58 141 76S222 72 265 93 332 105 377 113 438 132 479 121"/>
+        <path d="M17 49C62 48 104 83 153 88S223 89 260 108 332 129 381 133 433 145 469 140"/>
+      </g>
+      <path class="cold-air-filament" d="M9 34C54 28 95 46 140 69S220 68 267 85 348 105 390 105 442 116 470 111" fill="none" stroke="url(#cold-air-light)" stroke-linecap="round"/>
+    </svg>
+    <div class="cold-model">
+      <Image class="cold-poster-open" src={openPoster} format="webp" alt="Unidade interna de ar-condicionado split" loading="lazy" />
+      <Image class="cold-poster-closed" src={closedPoster} format="webp" alt="" loading="lazy" />
+      <canvas aria-hidden="true"></canvas>
+    </div>
+  </div>
+
+  <header class="cold-heading">
+    <p class="eyebrow">Como funciona</p>
+    <FrozenTitle />
+    <p class="cold-description">Veja o fluxo proposto para a manutenção do split da recepção da Clínica Horizonte.</p>
+  </header>
+</div>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const stage = document.querySelector<HTMLElement>('[data-cold-scene]');
+  const canvas = stage?.querySelector('canvas');
+  const url = stage?.dataset.model;
+
+  if (stage && canvas && url) {
+    const frame = stage.querySelector<HTMLElement>('.cold-model');
+    const device = stage.querySelector('.cold-device');
+    const wind = stage.querySelector('.cold-wind');
+    const frostFront = stage.querySelector('[data-frost-front]');
+    const snow = document.querySelector('[data-site-snow]');
+    const pose = { turn: 1, power: 1, opening: 1 };
+    const media = gsap.matchMedia();
+    let model: Awaited<ReturnType<typeof import('../../scripts/cold-model.js')['mountColdModel']>> | undefined;
+    let loadStarted = false;
+
+    const draw = () => model?.setPose(pose.turn, pose.power, pose.opening);
+
+    media.add({
+      motion: '(prefers-reduced-motion: no-preference)',
+      desktop: '(min-width: 801px)',
+    }, ({ conditions }) => {
+      if (!conditions?.motion) return;
+
+      const load = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        load.disconnect();
+        if (loadStarted) return;
+        loadStarted = true;
+
+        import('../../scripts/cold-model.js')
+          .then(({ mountColdModel }) => mountColdModel(canvas, url))
+          .then((mounted) => {
+            model = mounted;
+            draw();
+            if (frame) frame.dataset.modelReady = '';
+          })
+          .catch(() => {
+            // O render estático permanece visível se o GLB ou o WebGL falhar.
+          });
+      }, { rootMargin: '360px 0px' });
+      load.observe(stage);
+
+      gsap.set(stage, { attr: { 'data-air': 'off' } });
+
+      gsap.timeline({
+        defaults: { ease: 'none' },
+        onUpdate: draw,
+        scrollTrigger: { trigger: stage, start: 'top 90%', end: 'top 12%', scrub: 0.35 },
+      })
+        .fromTo(device, { xPercent: conditions.desktop ? 24 : 0 }, { xPercent: 0, duration: 0.62 }, 0)
+        .fromTo(pose, { turn: 0, power: 0, opening: 0 }, { turn: 1, duration: 0.62 }, 0)
+        .to(pose, { power: 1, duration: 0.17 }, 0.28)
+        .to(pose, { opening: 1, duration: 0.27 }, 0.29)
+        .fromTo(wind, { opacity: 0, scaleX: 0.58 }, { opacity: 0.86, scaleX: 1, duration: 0.35 }, 0.49)
+        .set(stage, { attr: { 'data-air': 'on' } }, 0.49)
+        .to(snow, { opacity: 0.72, duration: 0.46 }, 0.48)
+        .fromTo(frostFront, { attr: { transform: 'translate(0 0)' } }, {
+          attr: { transform: 'translate(650 0)' },
+          duration: 0.45,
+        }, 0.59);
+
+      return () => {
+        load.disconnect();
+        pose.turn = 1;
+        pose.power = 1;
+        pose.opening = 1;
+        draw();
+      };
+    });
+  }
+</script>
+
+<style>
+  .cold-scene {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr);
+    align-items: center;
+    gap: clamp(0.5rem, 3vw, 2.5rem);
+    margin-block-end: clamp(1.5rem, 4vw, 3.25rem);
+    padding-block: clamp(0.75rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem);
+  }
+
+  .cold-device { position: relative; min-width: 0; }
+  .cold-model { position: relative; aspect-ratio: 1.75; z-index: 1; }
+  .cold-model img, .cold-model canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .cold-model canvas { visibility: hidden; }
+  .cold-model[data-model-ready] canvas { visibility: visible; }
+  .cold-poster-closed { opacity: 0; }
+  .cold-scene[data-air="off"] .cold-poster-open { opacity: 0; }
+  .cold-scene[data-air="off"] .cold-poster-closed { opacity: 1; }
+  .cold-model[data-model-ready] img { visibility: hidden; }
+
+  .cold-wind {
+    position: absolute;
+    inset: 61% -20% auto 15%;
+    width: 105%;
+    height: 49%;
+    opacity: 0.72;
+    overflow: visible;
+    transform-origin: left center;
+    pointer-events: none;
+  }
+  .cold-air-bloom {
+    filter: blur(9px);
+    transform-origin: left center;
+    animation: aura-breathe 3.5s ease-in-out infinite alternate paused;
+  }
+  .cold-air-wave {
+    stroke-width: 13;
+    filter: blur(5px);
+    transform-origin: left center;
+    animation: aura-wave 3s ease-in-out infinite alternate paused;
+  }
+  .cold-air-filament {
+    stroke-width: 2.5;
+    filter: blur(1.8px) drop-shadow(0 0 7px #67e8f9);
+    transform-origin: left center;
+    animation: aura-wave 2.45s ease-in-out infinite alternate-reverse paused;
+  }
+  .cold-scene[data-air="on"] :is(.cold-air-bloom, .cold-air-wave, .cold-air-filament) {
+    animation-play-state: running;
+  }
+  @keyframes aura-breathe {
+    from { opacity: 0.55; transform: scaleY(0.76) skewY(-2deg); }
+    to { opacity: 0.95; transform: scaleY(1.18) skewY(3deg); }
+  }
+  @keyframes aura-wave {
+    from { opacity: 0.48; transform: translateY(-5px) skewY(-2.4deg); }
+    to { opacity: 0.95; transform: translateY(6px) skewY(2.4deg); }
+  }
+
+  .cold-heading { position: relative; z-index: 2; text-align: center; }
+  .cold-description { color: var(--text-muted); max-width: 38ch; margin-inline: auto; }
+
+  @media (max-width: 800px) {
+    .cold-scene { grid-template-columns: minmax(0, 1fr); }
+    .cold-device { width: min(100%, 29rem); margin-inline: auto; }
+    .cold-heading { width: min(100%, 29rem); margin-inline: auto; }
+    .cold-wind { width: 86%; }
+  }
+</style>

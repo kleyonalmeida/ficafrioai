@@ -1,0 +1,81 @@
+---
+const lines = [
+  { text: 'UMA PREVENTIVA,', drips: [[27, 10, 9], [52, 7, 15], [111, 8, 11], [182, 9, 17], [240, 7, 10], [303, 8, 13], [369, 9, 16], [443, 8, 12], [484, 10, 15]] },
+  { text: 'DO COMEÇO AO FIM.', drips: [[29, 9, 12], [76, 8, 17], [127, 8, 10], [177, 9, 15], [227, 7, 11], [286, 8, 16], [349, 9, 13], [421, 8, 18], [473, 10, 12]] },
+];
+---
+
+<h2 id="flow-title" class="frost-title">
+  <span class="frost-label">Uma preventiva, do começo ao fim.</span>
+  <svg class="frost-letters" viewBox="0 0 540 185" aria-hidden="true" focusable="false">
+    <defs>
+      <clipPath id="frost-growth">
+        <path data-frost-front transform="translate(650 0)" d="M-690-24H-105L-81-4-52 12-73 29-36 46-55 64-18 86-43 108-25 129-57 149-31 172-60 209H-690Z"/>
+      </clipPath>
+      <linearGradient id="frost-face" x1="0" x2="0" y1="12" y2="84" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#f6feff"/>
+        <stop offset=".24" stop-color="#d1edfa"/>
+        <stop offset=".34" stop-color="#7faecc"/>
+        <stop offset=".51" stop-color="#315d7e"/>
+        <stop offset=".65" stop-color="#73a1bd"/>
+        <stop offset=".79" stop-color="#a7d9ed"/>
+        <stop offset="1" stop-color="#eafcff"/>
+      </linearGradient>
+      <pattern id="frost-ridges" width="60" height="32" patternUnits="userSpaceOnUse">
+        <path d="M-7 7Q14 14 30 8T65 10M-5 20Q17 16 32 22T65 18M0 28l12-2 14 4 25-3 14 1" fill="none" stroke="#e8f9ff" stroke-width="1"/>
+        <path d="m-4 12 26 2 14-4 28 4m-67 10 16 1 16-5 29 2" fill="none" stroke="#163b58" stroke-width=".8"/>
+      </pattern>
+      <filter id="frost-edges" x="-4%" y="-20%" width="108%" height="140%">
+        <feTurbulence baseFrequency=".025 .1" numOctaves="2" seed="7" result="rough"/>
+        <feDisplacementMap in="SourceGraphic" in2="rough" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+    {lines.map(({ text }, index) => (
+      <text x="22" y={index * 84 + 68} textLength="496" lengthAdjust="spacingAndGlyphs" fill="#e8f5ff">{text}</text>
+    ))}
+    <g clip-path="url(#frost-growth)">
+    {lines.map(({ text, drips }, index) => (
+      <g transform={`translate(0 ${index * 84 + 3})`} filter="url(#frost-edges)">
+        <g fill="url(#frost-face)" stroke="#457b9a" stroke-width=".8">
+          {drips.map(([x, width, length]) => (
+            <path d={`M${x} 59q${width / 2} -4 ${width} 0l-${width * .72} ${length + 7}z`} />
+          ))}
+        </g>
+        <text x="22" y="65" textLength="496" lengthAdjust="spacingAndGlyphs" fill="url(#frost-face)" stroke="#265673" stroke-width="1.3" paint-order="stroke">{text}</text>
+        <text x="22" y="65" textLength="496" lengthAdjust="spacingAndGlyphs" fill="url(#frost-ridges)" opacity=".63">{text}</text>
+      </g>
+    ))}
+    </g>
+  </svg>
+</h2>
+
+<style>
+  .frost-title {
+    display: grid;
+    align-items: center;
+    min-width: 0;
+    margin-block: 0.45rem 0.5rem;
+    line-height: 1.06;
+  }
+
+  .frost-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .frost-letters {
+    display: block;
+    width: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 2px 0 #1a4d6c65) drop-shadow(0 0 10px #67e8f94f);
+  }
+
+  .frost-letters text {
+    font-family: system-ui, sans-serif;
+    font-size: 64px;
+    font-weight: 950;
+  }
+</style>

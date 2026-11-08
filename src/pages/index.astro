@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Hero from '../components/sections/Hero.astro';
+import ProductOverview from '../components/sections/ProductOverview.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import DepthShowcase from '../components/sections/DepthShowcase.astro';
+import Resources from '../components/sections/Resources.astro';
+import Audience from '../components/sections/Audience.astro';
+import Faq from '../components/sections/Faq.astro';
+---
+
+<BaseLayout>
+  <Header />
+  <main id="conteudo">
+    <Hero />
+    <ProductOverview />
+    <HowItWorks />
+    <DepthShowcase />
+    <Resources />
+    <Audience />
+    <Faq />
+  </main>
+  <Footer />
+</BaseLayout>

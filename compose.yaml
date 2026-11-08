@@ -1,0 +1,7 @@
+services:
+  site:
+    build:
+      context: .
+    ports:
+      - "127.0.0.1:${FICAFRIO_PORT:-4321}:80"
+

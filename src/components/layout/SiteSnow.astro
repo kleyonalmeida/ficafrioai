@@ -1,0 +1,57 @@
+---
+const flakes = Array.from({ length: 48 }, (_, index) => ({
+  x: (index * 37 + 7) % 101,
+  size: 2 + (index * 3) % 5,
+  seconds: 9 + (index * 7) % 13,
+  delay: -((index * 43) % 197) / 10,
+  drift: ((index * 37) % 116) - 58,
+}));
+---
+
+<div class="site-snow" data-site-snow aria-hidden="true">
+  {flakes.map(({ x, size, seconds, delay, drift }) => (
+    <span style={`--x:${x}%;--size:${size}px;--time:${seconds}s;--delay:${delay}s;--drift:${drift}px`}></span>
+  ))}
+</div>
+
+<style>
+  .site-snow {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    overflow: hidden;
+    opacity: 0.42;
+    pointer-events: none;
+  }
+
+  .site-snow span {
+    position: absolute;
+    left: var(--x);
+    top: -12px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: #f4fcff;
+    box-shadow: 0 0 3px 1px #408aa397, 0 0 8px #d5f9ff;
+    animation: snow-fall var(--time) var(--delay) linear infinite;
+  }
+
+  .site-snow span:nth-child(3n) {
+    background: #e1f6ff;
+    opacity: 0.62;
+  }
+
+  @keyframes snow-fall {
+    30% { transform: translate3d(calc(var(--drift) * 0.66 - 12px), 31dvh, 0); }
+    68% { transform: translate3d(calc(var(--drift) * 0.83 + 10px), 69dvh, 0); }
+    100% { transform: translate3d(var(--drift), calc(100dvh + 24px), 0); }
+  }
+
+  @media (max-width: 600px) {
+    .site-snow span:nth-child(even) { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-snow { display: none; }
+  }
+</style>

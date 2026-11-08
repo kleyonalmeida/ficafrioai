@@ -1,0 +1,12 @@
+---
+import { product } from '../../data/product';
+---
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <a class="brand" href={import.meta.env.BASE_URL}>
+      <span class="brand-mark" aria-hidden="true">❄</span>{product.name}
+    </a>
+    <p>Gestão para empresas de climatização.</p>
+    <small>© {new Date().getFullYear()} {product.name}</small>
+  </div>
+</footer>

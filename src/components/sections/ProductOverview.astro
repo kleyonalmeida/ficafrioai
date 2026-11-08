@@ -1,0 +1,16 @@
+---
+import { painPoints } from '../../data/landing';
+---
+
+<section id="proposta" class="section container" aria-labelledby="problem-title">
+  <header class="section-heading">
+    <p class="eyebrow">A rotina da climatização</p>
+    <h2 id="problem-title">O que sua equipe precisa saber antes de sair para a visita?</h2>
+    <p>Quem vai atender, qual aparelho está no local e o que aconteceu da última vez. Hoje, essas respostas muitas vezes estão em lugares diferentes.</p>
+  </header>
+  <div class="card-grid">
+    {painPoints.map(({ title, text }, index) => (
+      <article class="card"><span class="card-number" aria-hidden="true">0{index + 1}</span><h3>{title}</h3><p>{text}</p></article>
+    ))}
+  </div>
+</section>

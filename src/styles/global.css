@@ -1,0 +1,98 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color-scheme: dark;
+  --app-bg: #050608;
+  --surface: #0b1016;
+  --text: #eef7fc;
+  --text-muted: #a9bdcd;
+  --border: #243a4b;
+  --sidebar: #050608;
+  --sidebar-text: #dceaf3;
+  --brand-accent: #67e8f9;
+  --hero-gradient: linear-gradient(115deg, #050608, #081822);
+  --hero-text: #daebf4;
+  --primary: #2f9fc5;
+  --primary-hover: #8adff2;
+  --info-bg: #102330;
+  --info-text: #a1effb;
+  --ice: #a1effb;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-padding-top: 2rem; }
+body { margin: 0; background: var(--app-bg); color: var(--text); line-height: 1.5; }
+h1, h2, h3, p, figure, ul, ol, dl, dd { margin: 0; }
+a { color: inherit; }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.site-header :focus-visible, .hero :focus-visible, .site-footer :focus-visible { outline-color: var(--brand-accent); }
+.skip-link { position: fixed; z-index: 10; top: .5rem; left: .5rem; padding: .75rem; background: var(--surface); transform: translateY(-150%); }
+.skip-link:focus { transform: none; }
+.container { width: min(100% - 2rem, 75rem); margin-inline: auto; }
+
+.site-header, .site-footer { background: var(--sidebar); color: var(--sidebar-text); }
+.header-inner, .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding-block: .875rem; }
+.brand { display: inline-flex; align-items: center; gap: .625rem; color: #fff; font-size: 1.2rem; font-weight: 800; text-decoration: none; white-space: nowrap; }
+.brand-mark { display: grid; place-items: center; width: 2.125rem; height: 2.125rem; border: 1px solid #60c5d8; border-radius: 9px; color: var(--brand-accent); }
+.brand-accent { color: var(--brand-accent); }
+nav { display: flex; flex-wrap: wrap; align-items: center; column-gap: clamp(.75rem, 3vw, 2rem); }
+nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; font-weight: 650; text-decoration: none; }
+nav a:hover { text-decoration: underline; }
+.button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: .65rem; padding: .65rem 1rem; border: 1px solid transparent; border-radius: 9px; font-weight: 750; font-size: .9rem; text-decoration: none; }
+.button-outline { border-color: #83aec4; color: #fff; }
+.button-outline:hover { background: #ffffff18; }
+
+.hero { color: #fff; background: radial-gradient(ellipse at 85% 20%, #67e8f92c, transparent 60%), var(--hero-gradient); }
+.hero-copy { max-width: 55rem; padding-block: clamp(3rem, 6vw, 5rem); text-align: center; }
+.hero-kicker { display: flex; justify-content: center; align-items: center; gap: .55rem; color: var(--ice); font-size: .82rem; font-weight: 750; }
+.hero-kicker > span { width: .5rem; height: .5rem; background: var(--brand-accent); border-radius: 50%; flex: none; }
+.hero h1 { margin-block: 1rem; font-size: clamp(2.3rem, 5.25vw, 4.75rem); font-weight: 800; letter-spacing: -.065em; line-height: 1.04; text-wrap: balance; }
+.hero h1 em { color: var(--ice); font-style: normal; }
+.hero-description { color: var(--hero-text); max-width: 35rem; margin: 0 auto 1.5rem; font-size: clamp(1rem, 1.4vw, 1.15rem); }
+.hero-note { margin-top: 1rem; color: var(--hero-text); font-size: .82rem; }
+
+.product-preview { background: var(--surface); color: var(--text); border: 1px solid #a7bbd1; border-radius: 14px; box-shadow: 0 1.5rem 4rem #07182965; overflow: hidden; min-width: 0; }
+.positioning { background: var(--surface); border-bottom: 1px solid var(--border); }
+.positioning-inner { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; padding: 0; list-style: none; }
+.positioning li { padding: 1rem 0; font-size: .87rem; font-weight: 700; }
+.positioning b { margin-right: .4rem; color: var(--primary-hover); font-size: .75rem; font-variant-numeric: tabular-nums; }
+
+.section { padding-block: clamp(3.25rem, 6vw, 6rem); }
+#proposta { padding-block-end: clamp(1.75rem, 3vw, 2.75rem); }
+#como-funciona { padding-block: clamp(1.75rem, 3vw, 2.75rem); }
+.section-white { background: var(--surface); border-block: 1px solid var(--border); }
+.section-heading { max-width: 42rem; margin-bottom: 1.75rem; }
+.eyebrow { color: var(--primary-hover); font-size: .8rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.section-heading h2 { font-size: clamp(1.8rem, 3.8vw, 3.15rem); letter-spacing: -.04em; line-height: 1.12; margin-block: .5rem .75rem; text-wrap: balance; }
+.section-heading > p:last-child, .card p, .audience p:not(.eyebrow), details p { color: var(--text-muted); }
+.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.card { padding: clamp(1rem, 2.5vw, 1.5rem); border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.card h3, .audience h3 { font-size: 1.12rem; line-height: 1.25; margin-bottom: .5rem; }
+.card p { font-size: .95rem; }
+.card-number { display: inline-grid; place-items: center; min-width: 2.2rem; min-height: 2.2rem; margin: 0 .5rem .85rem 0; border-radius: 9px; color: var(--primary-hover); background: var(--info-bg); font-size: .85rem; font-weight: 800; }
+.resource-grid .card { border-left: 3px solid var(--primary); }
+.audience, .faq { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); gap: 1.5rem 3rem; }
+.audience-list { display: grid; gap: 1rem; }
+.audience-list article { border-left: 3px solid var(--primary); padding-left: 1rem; }
+.faq-list { display: grid; align-content: start; gap: .5rem; }
+details { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; }
+summary { min-height: 44px; padding: .75rem 1rem; cursor: pointer; font-weight: 700; }
+summary::marker { color: var(--primary); }
+details p { padding: 0 1rem .875rem; }
+
+.footer-inner { padding-block: 1.5rem; }
+.footer-inner p, .footer-inner small { font-size: .85rem; }
+
+@media (max-width: 800px) {
+  .audience, .faq { grid-template-columns: minmax(0, 1fr); }
+  .hero h1 { text-wrap: pretty; }
+  .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .header-inner { column-gap: .625rem; row-gap: .25rem; }
+  .header-inner nav { order: 1; width: 100%; }
+  .card-grid { grid-template-columns: minmax(0, 1fr); }
+  .positioning li { font-size: .76rem; }
+  .positioning b { display: block; }
+}

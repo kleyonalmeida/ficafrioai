@@ -1,0 +1,13 @@
+---
+import { questions } from '../../data/landing';
+---
+
+<section id="perguntas" class="section container faq" aria-labelledby="faq-title">
+  <header class="section-heading">
+    <p class="eyebrow">Perguntas frequentes</p>
+    <h2 id="faq-title">Sobre a primeira versão.</h2>
+  </header>
+  <div class="faq-list">
+    {questions.map(({ title, text }) => <details><summary>{title}</summary><p>{text}</p></details>)}
+  </div>
+</section>

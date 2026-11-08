@@ -1,0 +1,14 @@
+---
+import { resources } from '../../data/landing';
+---
+
+<section id="recursos" class="section container" aria-labelledby="features-title">
+  <header class="section-heading">
+    <p class="eyebrow">Recursos previstos</p>
+    <h2 id="features-title">Do escritório ao atendimento em campo.</h2>
+    <p>A primeira versão está sendo desenhada para cobrir o ciclo de serviço de uma pequena empresa de climatização.</p>
+  </header>
+  <div class="card-grid resource-grid">
+    {resources.map(({ title, text }) => <article class="card"><h3>{title}</h3><p>{text}</p></article>)}
+  </div>
+</section>
